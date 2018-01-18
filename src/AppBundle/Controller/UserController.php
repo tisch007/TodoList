@@ -33,10 +33,19 @@ class UserController extends Controller
             $password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
             $user->setPassword($password);
 
+
+
+
+
+          //  $user->setRoles(array('ROLE_ADMIN'));
+
             $em->persist($user);
             $em->flush();
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
+
+
+
 
             return $this->redirectToRoute('user_list');
         }
