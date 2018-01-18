@@ -26,7 +26,6 @@ class TaskController extends Controller
         $task = new Task();
         $task->setAuthor($this->get('security.token_storage')->getToken()->getUser()->getUsername());
         $form = $this->createForm(TaskType::class, $task);
-
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -46,12 +45,10 @@ class TaskController extends Controller
     public function editAction(Task $task, Request $request)
     {
         $form = $this->createForm(TaskType::class, $task);
-
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
-
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
             return $this->redirectToRoute('task_list');
@@ -70,7 +67,6 @@ class TaskController extends Controller
     {
         $task->toggle(!$task->isDone());
         $this->getDoctrine()->getManager()->flush();
-
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
 
         return $this->redirectToRoute('task_list');
@@ -85,10 +81,7 @@ class TaskController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->remove($task);
             $em->flush();
-
             $this->addFlash('success', 'La tâche a bien été supprimée.');
-
-
         }
         else{
             $this->addFlash('error', 'Vous ne pouvez pas supprimer la tâche.');
