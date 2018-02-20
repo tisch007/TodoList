@@ -42,7 +42,6 @@ class Task
 
     /**
      * @ORM\Column(type="string")
-     * @Assert\NotBlank
      */
     private $author;
 
@@ -85,11 +84,6 @@ class Task
     public function setContent($content)
     {
         $this->content = $content;
-    }
-
-    public function isDone()
-    {
-        return $this->isDone;
     }
 
     public function toggle($flag)
