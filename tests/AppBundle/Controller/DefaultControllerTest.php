@@ -22,17 +22,16 @@ class DefaultControllerTest extends WebTestCase
 
     public function testIndexAction()
     {
-        //si l'utilisateur n'est pas autentifié
-        $crawler = $this->client->request('GET', '/');
-        $this->assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
-        $crawler = $this->client->followRedirect();
-        $this->assertSame(1, $crawler->filter('form.loginForm')->count());
-        //si l'utilisateur est autentifié comme user
+        //unauthenticated request
+        $this->unauthRequest('/');
+
+        //authenticated but unauthorized request
         $this->logInAsUser();
         $crawler = $this->client->request('GET', '/');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSame(1, $crawler->filter('html:contains("Bienvenue sur Todo List")')->count());
-        //si l'utilisateur est autentifié comme Admin
+
+        //authenticated and authorized request
         $this->logInAsAdmin();
         $crawler = $this->client->request('GET', '/');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());

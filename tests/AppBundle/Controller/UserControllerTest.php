@@ -24,10 +24,7 @@ class UserControllerTest extends WebTestCase
     public function testListAction()
     {
         //unauthenticated request
-        $crawler = $this->client->request('GET', '/users');
-        $this->assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
-        $crawler = $this->client->followRedirect();
-        $this->assertSame(1, $crawler->filter('form.loginForm')->count());
+        $this->unauthRequest('/users');
 
         //authenticated but unauthorized request
         $this->logInAsUser();
@@ -44,10 +41,7 @@ class UserControllerTest extends WebTestCase
     public function testCreateAction()
     {
         //unauthenticated request
-        $crawler = $this->client->request('GET', '/users/create');
-        $this->assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
-        $crawler = $this->client->followRedirect();
-        $this->assertSame(1, $crawler->filter('form.loginForm')->count());
+        $this->unauthRequest('/users/create');
 
         //authenticated but unauthorized request
         $this->logInAsUser();
@@ -72,21 +66,15 @@ class UserControllerTest extends WebTestCase
         $this->client->submit($form);
         $crawler = $this->client->followRedirect();
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
+
+        $this->deleteTestUser();
     }
 
     public function testEditUser()
     {
+        $this->logInAsAdminWithUsername();
         $testUser = $this->em->getRepository('AppBundle:User')->findOneBy(['username' => 'testUser']);
         $testUserId = $testUser->getId();
-
-        //unauthenticated request
-        $crawler = $this->client->request('GET', 'users/'. $testUserId .'/edit');
-        $this->assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
-        $crawler = $this->client->followRedirect();
-        $this->assertSame(1, $crawler->filter('form.loginForm')->count());
-
-        //authenticated and authorized request
-        $this->logInAsAdmin();
         $crawler = $this->client->request('GET', 'users/'. $testUserId .'/edit');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSame(1, $crawler->filter('html:contains("Adresse email")')->count());
@@ -97,6 +85,6 @@ class UserControllerTest extends WebTestCase
         $crawler = $this->client->followRedirect();
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
 
-        $this->deleteTestUser($this->em);
+        $this->deleteTestUser();
     }
 }

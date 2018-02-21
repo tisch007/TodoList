@@ -26,63 +26,53 @@ class TaskControllerTest extends WebTestCase
     public function testListAction()
     {
         //unauthenticated request
-        $crawler = $this->client->request('GET', '/tasks');
-        $this->assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
-        $crawler = $this->client->followRedirect();
-        $this->assertSame(1, $crawler->filter('form.loginForm')->count());
+        $this->unauthRequest('/tasks');
 
         //authenticated as User
         $this->logInAsUserWithUsername();
         $crawler = $this->client->request('GET', '/tasks');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSame(1, $crawler->filter('html:contains("Consulter la liste des tâches terminées")')->count());
-        $this->deleteTestUser($this->em);
+        $this->deleteTestUser();
 
         //authenticated as Admin
         $this->logInAsAdminWithUsername();
         $crawler = $this->client->request('GET', '/tasks');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSame(1, $crawler->filter('html:contains("Consulter la liste des tâches terminées")')->count());
-        $this->deleteTestUser($this->em);
+        $this->deleteTestUser();
     }
 
     public function testListActionDone()
     {
         //unauthenticated request
-        $crawler = $this->client->request('GET', '/tasks/done');
-        $this->assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
-        $crawler = $this->client->followRedirect();
-        $this->assertSame(1, $crawler->filter('form.loginForm')->count());
+        $this->unauthRequest('/tasks/done');
 
         //authenticated as User
         $this->logInAsUserWithUsername();
         $crawler = $this->client->request('GET', '/tasks/done');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSame(1, $crawler->filter('html:contains("Consulter la liste des tâches à faire")')->count());
-        $this->deleteTestUser($this->em);
+        $this->deleteTestUser();
 
         //authenticated as Admin
         $this->logInAsAdminWithUsername();
         $crawler = $this->client->request('GET', '/tasks/done');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSame(1, $crawler->filter('html:contains("Consulter la liste des tâches à faire")')->count());
-        $this->deleteTestUser($this->em);
+        $this->deleteTestUser();
     }
-/*
+
     public function testCreateAction()
     {
         //unauthenticated request
-        $crawler = $this->client->request('GET', '/tasks/create');
-        $this->assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
-        $crawler = $this->client->followRedirect();
-        $this->assertSame(1, $crawler->filter('form.loginForm')->count());
+        $this->unauthRequest('/tasks/create');
 
         //authenticated as User
         $this->logInAsUserWithUsername();
         $crawler = $this->client->request('GET', '/tasks/create');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSame(1, $crawler->filter('html:contains("Retour à la liste des tâches")')->count());
-        $this->deleteTestUser($this->em);
 
         $form = $crawler->selectButton('Ajouter')->form();
         $form->setValues(['task[title]' => 'testTask', 'task[content]' => 'contenue de la tâche de test']);
@@ -90,27 +80,88 @@ class TaskControllerTest extends WebTestCase
         $this->client->submit($form);
         $crawler = $this->client->followRedirect();
 
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
 
-        $this->assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
-        var_dump($crawler);
-        //$this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
+        $this->deleteTestTask();
+        $this->deleteTestUser();
+
     }
-*/
-    public function testToggleTaskAction()
+
+    public function editAction()
     {
-        //unauthenticated request
-        $crawler = $this->client->request('GET', '/tasks/create');
-        $this->assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
-        $crawler = $this->client->followRedirect();
-        $this->assertSame(1, $crawler->filter('form.loginForm')->count());
-
-        //authenticated as User
-        $this->logInAsUserWithUsername();
         $this->createTask();
-
         $testTask = $this->em->getRepository('AppBundle:Task')->findOneByTitle('testTask');
         $TestTaskId = $testTask->getId();
+
+        //unauthenticated request
+        $this->unauthRequest('tasks/'. $TestTaskId .'/edit');
+
+        //authenticated as User
+        $this->logInAsUser();
+        $crawler = $this->client->request('GET', 'tasks/'. $TestTaskId .'/edit');
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(1, $crawler->filter('html:contains("Content")')->count());
+
+        $form = $crawler->selectButton('Modifier')->form();
+        $form->setValues(['task[title]' => 'testTask', 'task[content]' => 'contenue de la tâche de test modifié']);
+        $this->client->submit($form);
+        $crawler = $this->client->followRedirect();
+        $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
+
+        $this->deleteTestUser();
+        $this->deleteTestTask();
+    }
+
+    public function testDeleteTaskAction()
+    {
+        $this->createTask();
+        $testTask = $this->em->getRepository('AppBundle:Task')->findOneByTitle('testTask');
+        $TestTaskId = $testTask->getId();
+
+        //unauthenticated request
+        $this->unauthRequest('tasks/'. $TestTaskId .'/delete');
+
+        //author can delete his task
+        $this->logInAsUserWithUsername();
+        $this->client->request('GET', 'tasks/'. $TestTaskId .'/delete');
+        $crawler = $this->client->followRedirect();
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
+
+        //user can't delete when it's not his post
+        $this->createTaskWithOtherAuthor();
+        $testTask = $this->em->getRepository('AppBundle:Task')->findOneByTitle('testTask');
+        $TestTaskId = $testTask->getId();
+        $this->client->request('GET', 'tasks/'. $TestTaskId .'/delete');
+        $crawler = $this->client->followRedirect();
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(1, $crawler->filter('div.alert.alert-danger')->count());
+        $this->deleteTestUser();
+
+        //admin can delete anonyme post
+        $this->logInAsAdminWithUsername();
+        $testTask = $this->em->getRepository('AppBundle:Task')->findOneByTitle('testTask');
+        $TestTaskId = $testTask->getId();
+        $this->client->request('GET', 'tasks/'. $TestTaskId .'/delete');
+        $crawler = $this->client->followRedirect();
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
+        $this->deleteTestUser();
+    }
+
+    public function testToggleTaskAction()
+    {
+
+        $this->createTask();
+        $testTask = $this->em->getRepository('AppBundle:Task')->findOneByTitle('testTask');
+        $TestTaskId = $testTask->getId();
+
+        //unauthenticated request
+        $this->unauthRequest('tasks/'. $TestTaskId .'/toggle');
+
         //test task done
+        $this->logInAsUserWithUsername();
         $this->client->request('GET', 'tasks/'. $TestTaskId .'/toggle');
         $this->assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
         $crawler = $this->client->followRedirect();
@@ -125,7 +176,7 @@ class TaskControllerTest extends WebTestCase
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
         $this->assertSame(1, $crawler->filter('html:contains("est marquée comme à faire")')->count());
 
-        $this->deleteTestUser($this->em);
-        $this->deleteTestTask($this->em);
+        $this->deleteTestUser();
+        $this->deleteTestTask();
     }
 }

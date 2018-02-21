@@ -2,6 +2,7 @@
 
 namespace Tests\AppBundle;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\BrowserKit\Cookie;
 use AppBundle\Entity\User;
@@ -37,14 +38,14 @@ trait TestTrait{
         $this->client->getCookieJar()->set($cookie);
     }
 
-    private function deleteTestUser($em)
+    private function deleteTestUser()
     {
         $testUser = $this->em->getRepository('AppBundle:User')->findOneBy(['username' => 'testUser']);
         $this->em->remove($testUser);
         $this->em->flush();
     }
 
-    private function deleteTestTask($em)
+    private function deleteTestTask()
     {
         $testTask = $this->em->getRepository('AppBundle:Task')->findOneBy(['title' => 'testTask']);
         $this->em->remove($testTask);
@@ -99,5 +100,24 @@ trait TestTrait{
         $taskTest->setAuthor($testUser);
         $this->em->persist($taskTest);
         $this->em->flush();
+    }
+
+    private function createTaskWithOtherAuthor()
+    {
+        $testUser = 'anonyme';
+        $taskTest = new Task();
+        $taskTest->setTitle('testTask');
+        $taskTest->setContent('tâche de test');
+        $taskTest->setAuthor($testUser);
+        $this->em->persist($taskTest);
+        $this->em->flush();
+    }
+
+    private function unauthRequest(string $url)
+    {
+        $this->client->request('GET', $url);
+        $this->assertSame(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
+        $crawler = $this->client->followRedirect();
+        $this->assertSame(1, $crawler->filter('form.loginForm')->count());
     }
 }

@@ -22,6 +22,7 @@ class SecurityControllerTest extends WebTestCase
 
     public function testLoginAction()
     {
+        //unauthenticated request
         $crawler = $this->client->request('GET', '/login');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSame(1, $crawler->filter('form.loginForm')->count());
