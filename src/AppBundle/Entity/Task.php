@@ -92,20 +92,6 @@ class Task
     }
 
     /**
-     * Set isDone
-     *
-     * @param boolean $isDone
-     *
-     * @return Task
-     */
-    public function setIsDone($isDone)
-    {
-        $this->isDone = $isDone;
-
-        return $this;
-    }
-
-    /**
      * Get isDone
      *
      * @return boolean
