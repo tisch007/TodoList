@@ -42,7 +42,6 @@ class Task
 
     /**
      * @ORM\Column(type="string")
-     * @Assert\NotBlank
      */
     private $author;
 
@@ -87,28 +86,9 @@ class Task
         $this->content = $content;
     }
 
-    public function isDone()
-    {
-        return $this->isDone;
-    }
-
     public function toggle($flag)
     {
         $this->isDone = $flag;
-    }
-
-    /**
-     * Set isDone
-     *
-     * @param boolean $isDone
-     *
-     * @return Task
-     */
-    public function setIsDone($isDone)
-    {
-        $this->isDone = $isDone;
-
-        return $this;
     }
 
     /**

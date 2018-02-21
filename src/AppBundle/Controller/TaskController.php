@@ -23,7 +23,7 @@ class TaskController extends Controller
      */
     public function listActionDone()
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findBy(['isDone' => true])]);
+        return $this->render('task/listDone.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findBy(['isDone' => true])]);
     }
 
     /**
@@ -73,9 +73,14 @@ class TaskController extends Controller
      */
     public function toggleTaskAction(Task $task)
     {
-        $task->toggle(!$task->isDone());
+        $task->toggle(!$task->getIsDone());
         $this->getDoctrine()->getManager()->flush();
-        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        if($task->getIsDone() == 1){
+            $this->addFlash('success', sprintf('La tâche %s est marquée comme faite', $task->getTitle()));
+        }
+        else{
+            $this->addFlash('success', sprintf('La tâche %s est marquée comme à faire', $task->getTitle()));
+        }
 
         return $this->redirectToRoute('task_list');
     }

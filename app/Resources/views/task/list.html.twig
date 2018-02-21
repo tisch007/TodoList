@@ -4,6 +4,7 @@
 
 {% block body %}
 <div class="row" style="margin-bottom: 20px;">
+    <a href="{{ path('task_list_done') }}" class="btn btn-info">Consulter la liste des tâches terminées</a>
     <a href="{{ path('task_create') }}" class="btn btn-info pull-right">Créer une tâche</a>
 </div>
     <div class="row">
@@ -20,9 +21,7 @@
                 </div>
                 <div>
                     <form action="{{ path('task_toggle', {'id' : task.id }) }}">
-                        <button class="btn btn-success btn-sm pull-right" style="margin : 5px 5px 15px 5px;">
-                            {% if not task.isDone %}Marquer comme faite{% else %}Marquer non terminée{% endif %}
-                        </button>
+                        <button class="btn btn-success btn-sm pull-right" style="margin : 5px 5px 15px 5px;">Marquer comme faite</button>
                     </form>
                     {% if task.author == app.user.username or (app.user.roles[0] == 'ROLE_ADMIN' and task.author == 'anonyme') %}
                         <form action="{{ path('task_delete', {'id' : task.id }) }}">
