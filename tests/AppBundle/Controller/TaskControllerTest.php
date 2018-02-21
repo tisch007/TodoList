@@ -88,7 +88,7 @@ class TaskControllerTest extends WebTestCase
 
     }
 
-    public function editAction()
+    public function testEditAction()
     {
         $this->createTask();
         $testTask = $this->em->getRepository('AppBundle:Task')->findOneByTitle('testTask');
@@ -98,7 +98,7 @@ class TaskControllerTest extends WebTestCase
         $this->unauthRequest('tasks/'. $TestTaskId .'/edit');
 
         //authenticated as User
-        $this->logInAsUser();
+        $this->logInAsUserWithUsername();
         $crawler = $this->client->request('GET', 'tasks/'. $TestTaskId .'/edit');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSame(1, $crawler->filter('html:contains("Content")')->count());
@@ -108,9 +108,8 @@ class TaskControllerTest extends WebTestCase
         $this->client->submit($form);
         $crawler = $this->client->followRedirect();
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
-
-        $this->deleteTestUser();
         $this->deleteTestTask();
+        $this->deleteTestUser();
     }
 
     public function testDeleteTaskAction()
