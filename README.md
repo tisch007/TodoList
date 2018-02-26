@@ -2,7 +2,10 @@ ToDoList
 ========
 
 Eighth project of my php developer training on Openclassrooms.
+
+
 Installation
+
 1. Récupérer le code
 
         Via Git en clonant ce dépôt.
