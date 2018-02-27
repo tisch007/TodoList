@@ -15,7 +15,15 @@ class TaskController extends Controller
      */
     public function listAction()
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findAll()]);
+        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findBy(['isDone' => false])]);
+    }
+
+    /**
+     * @Route("/tasks/done", name="task_list_done")
+     */
+    public function listActionDone()
+    {
+        return $this->render('task/listDone.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findBy(['isDone' => true])]);
     }
 
     /**
@@ -26,17 +34,13 @@ class TaskController extends Controller
         $task = new Task();
         $task->setAuthor($this->get('security.token_storage')->getToken()->getUser()->getUsername());
         $form = $this->createForm(TaskType::class, $task);
-
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-
             $em->persist($task);
             $em->flush();
-
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
-
             return $this->redirectToRoute('task_list');
         }
 
@@ -49,12 +53,10 @@ class TaskController extends Controller
     public function editAction(Task $task, Request $request)
     {
         $form = $this->createForm(TaskType::class, $task);
-
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
-
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
             return $this->redirectToRoute('task_list');
@@ -71,10 +73,14 @@ class TaskController extends Controller
      */
     public function toggleTaskAction(Task $task)
     {
-        $task->toggle(!$task->isDone());
+        $task->toggle(!$task->getIsDone());
         $this->getDoctrine()->getManager()->flush();
-
-        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        if($task->getIsDone() == 1){
+            $this->addFlash('success', sprintf('La tâche %s est marquée comme faite', $task->getTitle()));
+        }
+        else{
+            $this->addFlash('success', sprintf('La tâche %s est marquée comme à faire', $task->getTitle()));
+        }
 
         return $this->redirectToRoute('task_list');
     }
@@ -84,12 +90,15 @@ class TaskController extends Controller
      */
     public function deleteTaskAction(Task $task)
     {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($task);
-        $em->flush();
-
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
-
+        if($task->getAuthor() === $this->getUser()->getUsername() || ($task->getAuthor() === 'anonyme' && $this->getUser()->getRoles()[0] === 'ROLE_ADMIN')) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($task);
+            $em->flush();
+            $this->addFlash('success', 'La tâche a bien été supprimée.');
+        }
+        else{
+            $this->addFlash('error', 'Vous ne pouvez pas supprimer la tâche.');
+        }
         return $this->redirectToRoute('task_list');
     }
 }

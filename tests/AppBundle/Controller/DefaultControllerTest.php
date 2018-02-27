@@ -1,18 +1,40 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: cyrille
+ * Date: 29/01/2018
+ * Time: 17:34
+ */
 
 namespace Tests\AppBundle\Controller;
 
+use Tests\AppBundle\TestTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
+use Symfony\Component\HttpFoundation\Response;
 class DefaultControllerTest extends WebTestCase
 {
-    public function testIndex()
+    use TestTrait;
+
+    public function setUp()
     {
-        $client = static::createClient();
+        $this->client = static::createClient();
+    }
 
-        $crawler = $client->request('GET', '/');
+    public function testIndexAction()
+    {
+        //unauthenticated request
+        $this->unauthRequest('/');
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertContains('Welcome to Symfony', $crawler->filter('#container h1')->text());
+        //authenticated but unauthorized request
+        $this->logInAsUser();
+        $crawler = $this->client->request('GET', '/');
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(1, $crawler->filter('html:contains("Bienvenue sur Todo List")')->count());
+
+        //authenticated and authorized request
+        $this->logInAsAdmin();
+        $crawler = $this->client->request('GET', '/');
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(1, $crawler->filter('html:contains("Bienvenue sur Todo List")')->count());
     }
 }
