@@ -8,7 +8,7 @@ Pour installer le projet suiver les insctructions du fichier readme.md
 
 ## Etape 2 Travailler sur le projet
 
-Commener par créer une nouvelle branche et vous placer dessus avec la commande
+Commencer par créer une nouvelle branche et vous placer dessus avec la commande
 
 	git checkout -b <nomDeLaNouvelleBranche>
 
@@ -22,7 +22,7 @@ Pensez à commit régulièrement à l'aide des commandes suivante
 	git commit -m'<nom du commit>'
 	git push
 
-Effectuer une pull request lorsque votre travaille est terminé.
+Effectuer une pull request lorsque votre travail est terminé.
 
 ## Processus de qualité et règles à respecter.
 
