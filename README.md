@@ -4,19 +4,19 @@ ToDoList
 Eighth project of my php developer training on Openclassrooms.
 
 
-## Installation
+# Installation
 
-# 1. Récupérer le code
+## 1. Récupérer le code
 
         Via Git en clonant ce dépôt.
 
-# 2. Télécharger les vendors et définir les paramètres d'application
+## 2. Télécharger les vendors et définir les paramètres d'application
 
 Avec Composer bien évidemment :
 
     composer update
 
-# 3. Créez la base de données
+## 3. Créez la base de données
 
 Si la base de données que vous avez renseignée dans l'étape 2 n'existe pas déjà, créez-la :
 
