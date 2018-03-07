@@ -29,6 +29,9 @@ Puis créez les tables correspondantes au schéma Doctrine :
 ## Comment contribuer au projet
 Pour contribuer au projet, suiver les étapes décrite dans le document [HowToContribute.md].
 
+Voici le lien vers l'analyze [blackfire](https://blackfire.io/profiles/5e88a906-f772-483e-a61d-4b3b78a4dc7b/graph)
+
+
 Enjoy it !
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e970df7dd33b4467a9e5c361bccd50cc)](https://www.codacy.com/app/tisch007/TodoList?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tisch007/TodoList&amp;utm_campaign=Badge_Grade)
