@@ -29,7 +29,7 @@ Puis créez les tables correspondantes au schéma Doctrine :
 ## Comment contribuer au projet
 Pour contribuer au projet, suiver les étapes décrite dans le document [HowToContribute.md].
 
-Voici le lien vers l'analyze [blackfire](https://blackfire.io/profiles/5e88a906-f772-483e-a61d-4b3b78a4dc7b/graph)
+Voici le lien vers l'analyse [blackfire](https://blackfire.io/profiles/5e88a906-f772-483e-a61d-4b3b78a4dc7b/graph)
 
 
 Enjoy it !
