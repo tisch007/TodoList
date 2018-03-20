@@ -25,13 +25,13 @@ class DefaultControllerTest extends WebTestCase
         //unauthenticated request
         $this->unauthRequest('/');
 
-        //authenticated but unauthorized request
+        //authenticated as user
         $this->logInAsUser();
         $crawler = $this->client->request('GET', '/');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertSame(1, $crawler->filter('html:contains("Bienvenue sur Todo List")')->count());
 
-        //authenticated and authorized request
+        //authenticated as admin
         $this->logInAsAdmin();
         $crawler = $this->client->request('GET', '/');
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
