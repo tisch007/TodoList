@@ -27,11 +27,7 @@
                         <th scope="row">{{ loop.index }}</th>
                         <td>{{ user.username }}</td>
                         <td>{{ user.email }}</td>
-                        {% if user.roles[0] is defined %}
-                            <td>{{ user.roles[0] }}</td>
-                        {% else %}
-                            <td></td>
-                        {% endif %}
+                        <td>{{ user.roles[0] }}</td>
                         <td>
                             <a href="{{ path('user_edit', {'id' : user.id}) }}" class="btn btn-success btn-sm">Edit</a>
                         </td>
