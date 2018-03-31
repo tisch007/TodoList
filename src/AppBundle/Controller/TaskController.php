@@ -37,9 +37,9 @@ class TaskController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($task);
-            $em->flush();
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($task);
+            $entityManager->flush();
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
             return $this->redirectToRoute('task_list');
         }
@@ -91,9 +91,9 @@ class TaskController extends Controller
     public function deleteTaskAction(Task $task)
     {
         if($task->getAuthor() === $this->getUser()->getUsername() || ($task->getAuthor() === 'anonyme' && $this->getUser()->getRoles()[0] === 'ROLE_ADMIN')) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($task);
-            $em->flush();
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($task);
+            $entityManager->flush();
             $this->addFlash('success', 'La tâche a bien été supprimée.');
         }
         else{
