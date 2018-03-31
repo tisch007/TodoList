@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Accès refusé</h1>
+    <p>
+        Vous n'avez pas la permission d'accéder à la page suivante (erreur 403).
+        Veuillez vous connecter avec un compte administrateur pour y accéder.
+        <a href="{{ path('homepage') }}">Retour à la page d'accueil</a>.
+    </p>
+{% endblock %}

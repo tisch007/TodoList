@@ -8,8 +8,6 @@
 
 namespace Tests\AppBundle\Controller;
 
-
-use AppBundle\Entity\Task;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Tests\AppBundle\TestTrait;
 use Symfony\Component\HttpFoundation\Response;
