@@ -11,6 +11,7 @@ namespace Tests\AppBundle\Controller;
 use Tests\AppBundle\TestTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+
 class DefaultControllerTest extends WebTestCase
 {
     use TestTrait;

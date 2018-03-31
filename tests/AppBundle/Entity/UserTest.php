@@ -41,6 +41,6 @@ class UserTest extends TestCase
     public function testSalt()
     {
         $user = new User;
-        $this->assertEquals(NULL, $user->getSalt());
+        $this->assertEquals(null, $user->getSalt());
     }
 }

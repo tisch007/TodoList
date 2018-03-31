@@ -11,6 +11,7 @@ namespace Tests\AppBundle\Controller;
 use Tests\AppBundle\TestTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+
 class UserControllerTest extends WebTestCase
 {
     use TestTrait;
@@ -56,13 +57,23 @@ class UserControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('Ajouter')->form();
         //test new user with different password
-        $form->setValues(['user[username]' => 'testUser', 'user[password][first]' => 'a', 'user[password][second]' => 'b']);
+        $form->setValues(
+            ['user[username]' => 'testUser', 'user[password][first]' => 'a', 'user[password][second]' => 'b']
+        );
         $crawler = $this->client->submit($form);
-        $this->assertSame(1, $crawler->filter('html:contains("Les deux mots de passe doivent correspondre.")')->count());
+        $this->assertSame(
+            1,
+            $crawler->filter('html:contains("Les deux mots de passe doivent correspondre.")')->count()
+        );
 
         //test new user correctly set
         $form = $crawler->selectButton('Ajouter')->form();
-        $form->setValues(['user[username]' => 'testUser', 'user[password][first]' => 'a', 'user[password][second]' => 'a', 'user[email]' => 'test@gmail.com', 'user[roles]' => ['ROLE_USER']]);
+        $form->setValues([
+            'user[username]' => 'testUser',
+            'user[password][first]' => 'a',
+            'user[password][second]' => 'a',
+            'user[email]' => 'test@gmail.com',
+            'user[roles]' => ['ROLE_USER']]);
         $this->client->submit($form);
         $crawler = $this->client->followRedirect();
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());
@@ -80,7 +91,12 @@ class UserControllerTest extends WebTestCase
         $this->assertSame(1, $crawler->filter('html:contains("Adresse email")')->count());
 
         $form = $crawler->selectButton('Modifier')->form();
-        $form->setValues(['user[username]' => 'testUser', 'user[password][first]' => 'b', 'user[password][second]' => 'b', 'user[email]' => 'test2@gmail.com', 'user[roles]' => ['ROLE_USER']]);
+        $form->setValues([
+            'user[username]' => 'testUser',
+            'user[password][first]' => 'b',
+            'user[password][second]' => 'b',
+            'user[email]' => 'test2@gmail.com',
+            'user[roles]' => ['ROLE_USER']]);
         $this->client->submit($form);
         $crawler = $this->client->followRedirect();
         $this->assertSame(1, $crawler->filter('div.alert.alert-success')->count());

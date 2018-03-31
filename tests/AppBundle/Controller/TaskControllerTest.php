@@ -11,6 +11,7 @@ namespace Tests\AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Tests\AppBundle\TestTrait;
 use Symfony\Component\HttpFoundation\Response;
+
 class TaskControllerTest extends WebTestCase
 {
     use TestTrait;
@@ -83,7 +84,6 @@ class TaskControllerTest extends WebTestCase
 
         $this->deleteTestTask();
         $this->deleteTestUser();
-
     }
 
     public function testEditAction()

@@ -8,7 +8,8 @@ use Symfony\Component\BrowserKit\Cookie;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Task;
 
-trait TestTrait{
+trait TestTrait
+{
 
     private $client = null;
 

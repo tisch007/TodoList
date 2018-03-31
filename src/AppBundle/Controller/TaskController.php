@@ -15,7 +15,10 @@ class TaskController extends Controller
      */
     public function listAction()
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findBy(['isDone' => false])]);
+        return $this->render(
+            'task/list.html.twig',
+            ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findBy(['isDone' => false])]
+        );
     }
 
     /**
@@ -23,7 +26,10 @@ class TaskController extends Controller
      */
     public function listActionDone()
     {
-        return $this->render('task/listDone.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findBy(['isDone' => true])]);
+        return $this->render(
+            'task/listDone.html.twig',
+            ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findBy(['isDone' => true])]
+        );
     }
 
     /**
@@ -75,10 +81,9 @@ class TaskController extends Controller
     {
         $task->toggle(!$task->getIsDone());
         $this->getDoctrine()->getManager()->flush();
-        if($task->getIsDone() == 1){
+        if ($task->getIsDone() == 1) {
             $this->addFlash('success', sprintf('La tâche %s est marquée comme faite', $task->getTitle()));
-        }
-        else{
+        } else {
             $this->addFlash('success', sprintf('La tâche %s est marquée comme à faire', $task->getTitle()));
         }
 
@@ -90,13 +95,13 @@ class TaskController extends Controller
      */
     public function deleteTaskAction(Task $task)
     {
-        if($task->getAuthor() === $this->getUser()->getUsername() || ($task->getAuthor() === 'anonyme' && $this->getUser()->getRoles()[0] === 'ROLE_ADMIN')) {
+        if ($task->getAuthor() === $this->getUser()->getUsername() ||
+            ($task->getAuthor() === 'anonyme' && $this->getUser()->getRoles()[0] === 'ROLE_ADMIN')) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($task);
             $entityManager->flush();
             $this->addFlash('success', 'La tâche a bien été supprimée.');
-        }
-        else{
+        } else {
             $this->addFlash('error', 'Vous ne pouvez pas supprimer la tâche.');
         }
         return $this->redirectToRoute('task_list');
