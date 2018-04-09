@@ -27,19 +27,17 @@ Effectuer une pull request lorsque votre travail est terminé.
 
 ## Processus de qualité et règles à respecter.
 
-### PSR
-
-Merci de respecter les standards du PSR (PHP Standard Recomandations) 
-
-* PSR-0 on the autoloader (now depreciated but used in the PSR-4)
-* PSR-1 on the bases of code standards
-* PSR-2 on the code style
-* PSR-4 on the autoloader
-
-Vous pouvez trouver la documentation officiel ici [PSR documentation](https://www.php-fig.org/psr/)
-
 ### Conventions Symfony
 Merci de respecter les [conventions Symfony](https://symfony.com/doc/3.3/contributing/code/conventions.html)
+
+### Test unitaire et fonctionnelle
+
+Merci de réaliser les tests en rapport avec vos travaux.
+
+### PSR
+
+Vous pouvez utiliser [CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) pour vérifier que votre travail respecte bien les PSR 1-2
+
 
 Contacter moi pour toutes questions.
 =======
